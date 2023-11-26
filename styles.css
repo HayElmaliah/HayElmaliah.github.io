@@ -1,20 +1,17 @@
-body {
-    margin: 0;
+.repo-list {
+    list-style-type: none;
     padding: 0;
-    background-color: #f8f8f8; /* Off-white background */
-    font-family: Arial, sans-serif; /* You can change the font */
 }
 
-.container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh; /* Full viewport height */
-    text-align: center;
+.repo-list li {
+    margin: 10px 0;
 }
 
-h1 {
-    font-size: 3em;
-    color: #333; /* Dark grey color for the text */
-    margin: 0;
+.repo-list li a {
+    color: #007bff;
+    text-decoration: none;
+}
+
+.repo-list li a:hover {
+    text-decoration: underline;
 }
