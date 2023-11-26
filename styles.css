@@ -1,17 +1,44 @@
-.repo-list {
-    list-style-type: none;
+body {
+    margin: 0;
     padding: 0;
+    background-color: #f8f8f8; /* Off-white background */
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; /* Modern font */
+    color: #333;
 }
 
-.repo-list li {
-    margin: 10px 0;
+.container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
 }
 
-.repo-list li a {
-    color: #007bff;
+h1 {
+    font-size: 3em;
+    margin-bottom: 10px;
+}
+
+.buttons {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.btn {
+    background-color: #007bff; /* Button color */
+    color: white;
+    padding: 15px 25px;
+    margin: 10px;
     text-decoration: none;
+    border: none;
+    border-radius: 5px; /* Rounded corners */
+    font-size: 1em;
+    transition: background-color 0.3s, transform 0.3s;
 }
 
-.repo-list li a:hover {
-    text-decoration: underline;
+.btn:hover {
+    background-color: #0056b3; /* Darker shade on hover */
+    transform: scale(1.05); /* Slightly increase size on hover */
+    text-decoration: none;
 }
