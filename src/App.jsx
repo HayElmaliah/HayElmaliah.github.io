@@ -1,14 +1,22 @@
+// App.jsx
 import React, { useState, useEffect } from 'react';
-import { Github, ExternalLink, Mail, Phone } from 'lucide-react';
+import { Github, ExternalLink, Mail } from 'lucide-react';
 
 const Portfolio = () => {
   const [isScrolled, setIsScrolled] = useState(false);
+  const [isCanvasSupported, setIsCanvasSupported] = useState(true);
 
   useEffect(() => {
+    // Check if canvas is supported
+    const canvas = document.createElement('canvas');
+    setIsCanvasSupported(!!canvas.getContext);
+
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 50);
     };
-    window.addEventListener('scroll', handleScroll);
+    
+    // Passive event listener for better performance
+    window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
@@ -54,21 +62,39 @@ const Portfolio = () => {
     }
   ];
 
-  // Matrix rain effect
+  // Matrix rain effect with error handling and performance optimizations
   useEffect(() => {
+    if (!isCanvasSupported) return;
+
     const canvas = document.getElementById('matrix-rain');
     if (!canvas) return;
 
-    const ctx = canvas.getContext('2d');
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
+    const ctx = canvas.getContext('2d', { alpha: false }); // Disable alpha for better performance
+    if (!ctx) return;
+
+    const resizeCanvas = () => {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    };
+
+    resizeCanvas();
 
     const chars = '0123456789ABCDEF';
-    const fontSize = 14;
-    const columns = canvas.width / fontSize;
-    const drops = new Array(Math.floor(columns)).fill(1);
+    const fontSize = Math.max(12, Math.floor(window.innerWidth / 100)); // Responsive font size
+    const columns = Math.ceil(canvas.width / fontSize);
+    const drops = new Array(columns).fill(1);
 
-    const draw = () => {
+    let animationFrameId;
+    let lastTime = 0;
+    const fps = 30;
+    const frameInterval = 1000 / fps;
+
+    const draw = (currentTime) => {
+      animationFrameId = requestAnimationFrame(draw);
+
+      const deltaTime = currentTime - lastTime;
+      if (deltaTime < frameInterval) return;
+
       ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
       ctx.fillRect(0, 0, canvas.width, canvas.height);
 
@@ -77,28 +103,42 @@ const Portfolio = () => {
 
       for (let i = 0; i < drops.length; i++) {
         const text = chars[Math.floor(Math.random() * chars.length)];
-        ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+        const x = i * fontSize;
+        const y = drops[i] * fontSize;
+
+        if (y < canvas.height) {
+          ctx.fillText(text, x, y);
+        }
         
-        if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
+        if (y > canvas.height && Math.random() > 0.975) {
           drops[i] = 0;
         }
         drops[i]++;
       }
+
+      lastTime = currentTime;
     };
 
-    const interval = setInterval(draw, 35);
+    // Debounced resize handler
+    let resizeTimeout;
     const handleResize = () => {
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
+      clearTimeout(resizeTimeout);
+      resizeTimeout = setTimeout(() => {
+        resizeCanvas();
+        drops.length = Math.ceil(canvas.width / fontSize);
+        drops.fill(1);
+      }, 250);
     };
 
-    window.addEventListener('resize', handleResize);
+    window.addEventListener('resize', handleResize, { passive: true });
+    animationFrameId = requestAnimationFrame(draw);
 
     return () => {
-      clearInterval(interval);
+      cancelAnimationFrame(animationFrameId);
       window.removeEventListener('resize', handleResize);
+      clearTimeout(resizeTimeout);
     };
-  }, []);
+  }, [isCanvasSupported]);
 
   const scrollToSection = (sectionId) => {
     const element = document.getElementById(sectionId);
@@ -108,13 +148,12 @@ const Portfolio = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-900 text-white">
-      {/* Navigation */}
-      <nav className={`fixed w-full z-50 transition-all duration-300 ${isScrolled ? 'bg-gray-900/95 shadow-lg' : ''}`}>
-        <div className="max-w-7xl mx-auto px-4">
+    <div className="min-h-screen bg-gray-900 text-white overflow-x-hidden">
+      <nav className={`fixed w-full z-50 transition-all duration-300 ${isScrolled ? 'bg-gray-900/95 backdrop-blur-sm shadow-lg' : ''}`}>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
             <span className="text-xl font-bold">HE</span>
-            <div className="hidden md:flex space-x-8">
+            <div className="hidden sm:flex space-x-8">
               {['projects', 'skills', 'contact'].map((section) => (
                 <button
                   key={section}
@@ -129,18 +168,19 @@ const Portfolio = () => {
         </div>
       </nav>
 
-      {/* Hero Section */}
       <section className="relative min-h-screen flex items-center justify-center px-4 pt-16">
-        <canvas 
-          id="matrix-rain" 
-          className="absolute inset-0 opacity-20 pointer-events-none"
-          style={{ width: '100%', height: '100%' }}
-        />
+        {isCanvasSupported && (
+          <canvas 
+            id="matrix-rain" 
+            className="absolute inset-0 opacity-20 pointer-events-none"
+            style={{ width: '100%', height: '100%' }}
+          />
+        )}
         <div className="relative max-w-4xl mx-auto text-center">
-          <h1 className="text-4xl md:text-6xl font-bold mb-6 bg-gradient-to-r from-blue-500 to-purple-500 bg-clip-text text-transparent">
+          <h1 className="text-4xl sm:text-6xl font-bold mb-6 bg-gradient-to-r from-blue-500 to-purple-500 bg-clip-text text-transparent">
             Hay Elmaliah
           </h1>
-          <p className="text-xl md:text-2xl text-gray-300 mb-8">
+          <p className="text-xl sm:text-2xl text-gray-300 mb-8">
             Software Engineer at Intel PESG
           </p>
           <button 
@@ -152,15 +192,14 @@ const Portfolio = () => {
         </div>
       </section>
 
-      {/* Main Projects Section */}
       <section id="projects" className="py-20 px-4">
         <div className="max-w-7xl mx-auto">
           <h2 className="text-3xl font-bold mb-12 text-center">Featured Projects</h2>
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-8">
             {mainProjects.map((project, idx) => (
               <div 
                 key={idx}
-                className="bg-gray-800 rounded-xl p-6 hover:bg-gray-750 transition-colors"
+                className="bg-gray-800 rounded-xl p-6 hover:bg-gray-700 transition-colors"
               >
                 <h3 className="text-xl font-bold mb-3">{project.title}</h3>
                 <p className="text-gray-300 mb-4">{project.description}</p>
@@ -202,15 +241,14 @@ const Portfolio = () => {
         </div>
       </section>
 
-      {/* Academic Projects Section */}
       <section className="py-20 px-4 bg-gray-800/50">
         <div className="max-w-7xl mx-auto">
           <h2 className="text-3xl font-bold mb-12 text-center">Academic Projects</h2>
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {academicProjects.map((project, idx) => (
               <div 
                 key={idx}
-                className="bg-gray-800 rounded-lg p-5 flex items-center justify-between hover:bg-gray-750 transition-colors"
+                className="bg-gray-800 rounded-lg p-5 flex items-center justify-between hover:bg-gray-700 transition-colors"
               >
                 <span className="text-lg font-semibold">{project.title}</span>
                 <a 
@@ -227,7 +265,6 @@ const Portfolio = () => {
         </div>
       </section>
 
-      {/* Skills Section */}
       <section id="skills" className="py-20 px-4">
         <div className="max-w-7xl mx-auto">
           <h2 className="text-3xl font-bold mb-12 text-center">Skills</h2>
@@ -235,7 +272,7 @@ const Portfolio = () => {
             {skills.map((skill, idx) => (
               <span
                 key={idx}
-                className="px-4 py-2 bg-gray-800 rounded-lg text-gray-200 hover:bg-gray-750 transition-colors"
+                className="px-4 py-2 bg-gray-800 rounded-lg text-gray-200 hover:bg-gray-700 transition-colors"
               >
                 {skill}
               </span>
@@ -244,11 +281,10 @@ const Portfolio = () => {
         </div>
       </section>
 
-      {/* Contact Section */}
       <section id="contact" className="py-20 px-4">
         <div className="max-w-3xl mx-auto text-center">
           <h2 className="text-3xl font-bold mb-8">Contact Me</h2>
-          <div className="flex flex-col md:flex-row justify-center items-center gap-6">
+          <div className="flex flex-col sm:flex-row justify-center items-center gap-6">
             <a 
               href="mailto:hay.elmaliah@gmail.com"
               className="inline-flex items-center px-6 py-3 bg-blue-600 hover:bg-blue-700 rounded-lg transition-colors"
