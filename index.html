@@ -1,13 +1,116 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Hay Elmaliah - Portfolio</title>
-  </head>
-  <body>
-    <div id="root"></div>
-    <script type="module" src="./src/main.jsx"></script>
-  </body>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <nav>
+        <div class="nav-content">
+            <span class="logo">HE</span>
+            <div class="nav-links">
+                <a href="#projects">Projects</a>
+                <a href="#skills">Skills</a>
+                <a href="#contact">Contact</a>
+            </div>
+        </div>
+    </nav>
+
+    <header class="hero">
+        <div class="hero-content">
+            <h1>Hay Elmaliah</h1>
+            <p class="subtitle">Software Engineer at Intel PESG</p>
+            <a href="#projects" class="cta-button">See My Projects</a>
+        </div>
+    </header>
+
+    <section id="projects">
+        <div class="section-content">
+            <h2>Featured Projects</h2>
+            <div class="project-grid">
+                <div class="project-card">
+                    <h3>TakTick</h3>
+                    <p>Full-stack task management application featuring user authentication, priority levels, and interactive dashboards.</p>
+                    <div class="tech-tags">
+                        <span>React</span>
+                        <span>Node.js</span>
+                        <span>MongoDB</span>
+                    </div>
+                    <div class="project-links">
+                        <a href="https://github.com/HayElmaliah/TaskTracker" target="_blank">GitHub</a>
+                        <a href="https://taktick.netlify.app/" target="_blank">Live Demo</a>
+                    </div>
+                </div>
+
+                <div class="project-card">
+                    <h3>YOLOv8 Object Detection</h3>
+                    <p>Advanced implementation of environmental trash detection using YOLOv8. Achieved significant improvements in detection accuracy.</p>
+                    <div class="tech-tags">
+                        <span>PyTorch</span>
+                        <span>Computer Vision</span>
+                        <span>Deep Learning</span>
+                    </div>
+                    <div class="project-links">
+                        <a href="https://github.com/HayElmaliah/Deep-Learning-CS236781-MiniProject" target="_blank">GitHub</a>
+                    </div>
+                </div>
+
+                <div class="project-card">
+                    <h3>Multi-Agent Systems</h3>
+                    <p>Implemented algorithms for geometric search patterns, focusing on circular pincer movements and coordinated search strategies.</p>
+                    <div class="tech-tags">
+                        <span>Python</span>
+                        <span>NumPy</span>
+                        <span>Algorithms</span>
+                    </div>
+                    <div class="project-links">
+                        <a href="https://github.com/HayElmaliah/On-Multi-Agent-Systems-CS236604" target="_blank">GitHub</a>
+                    </div>
+                </div>
+            </div>
+
+            <h2>Academic Projects</h2>
+            <div class="academic-projects">
+                <a href="https://github.com/HayElmaliah/Intro-to-data-processing-CS236201" target="_blank" class="academic-card">
+                    Intro to Data Processing
+                </a>
+                <a href="https://github.com/HayElmaliah/Deep-Learning-CS236781" target="_blank" class="academic-card">
+                    Deep Learning Course
+                </a>
+                <a href="https://github.com/HayElmaliah/Submodular-Optimization-Algorithms-CS236621" target="_blank" class="academic-card">
+                    Submodular Optimization
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <section id="skills">
+        <div class="section-content">
+            <h2>Skills</h2>
+            <div class="skills-grid">
+                <span class="skill-tag">Python</span>
+                <span class="skill-tag">C++</span>
+                <span class="skill-tag">JavaScript</span>
+                <span class="skill-tag">React</span>
+                <span class="skill-tag">Node.js</span>
+                <span class="skill-tag">Linux</span>
+                <span class="skill-tag">Git</span>
+                <span class="skill-tag">EDA Tools</span>
+                <span class="skill-tag">Machine Learning</span>
+            </div>
+        </div>
+    </section>
+
+    <section id="contact">
+        <div class="section-content">
+            <h2>Contact Me</h2>
+            <a href="mailto:hay.elmaliah@gmail.com" class="contact-button">
+                Email Me
+            </a>
+        </div>
+    </section>
+</body>
 </html>
